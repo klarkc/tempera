@@ -349,10 +349,19 @@ yarn add @tempera/tailwind-config
 ```js
 import getTailwindConfig from "@tempera/tailwind-config";
 
-const tailwindConfig = getTailwindConfig(tokens);
+const tailwindConfig = getTailwindConfig(tokens, {
+  extend,
+  mustMatch,
+});
 
 // do something with the tailwind config
 ```
+
+##### Options
+
+1. `extend`: Extend default tailwind config. Defaults to false.
+2. `mustMatch`: Allow unmatched tokens to be skipped, otherwhise throws. Defaults to true.
+
 
 ##### Tokens
 The plugin expects these specs/tokens to be in the [javascript/es6 format which you can generate using Style Dictionary](https://amzn.github.io/style-dictionary/#/formats?id=javascriptes6).
