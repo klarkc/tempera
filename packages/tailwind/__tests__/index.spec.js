@@ -57,6 +57,30 @@ describe("getTailwindConfig", () => {
 
       expect(exception).toMatchSnapshot();
     });
+
+    it("throws when token does not matches any matcher ", () => {
+      const tokens = {
+        FooBar: "yellow",
+      };
+
+      let exception;
+
+      try {
+        getTailwindConfig(tokens);
+      } catch (error) {
+        exception = error;
+      }
+
+      expect(exception).toMatchSnapshot();
+    });
+
+    it("does not throw when token does not matches any matcher ", () => {
+      const tokens = {
+        FooBar: "yellow",
+      };
+
+      expect(getTailwindConfig(tokens, { mustMatch: false })).toMatchSnapshot();
+    });
   });
 
   describe("missing line height tokens tokens", () => {

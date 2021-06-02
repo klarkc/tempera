@@ -7,7 +7,7 @@ import * as matchers from "./matchers";
 import { validateTokens } from "./utils";
 import defaultConfig from "./stubs/default-tailwind-config";
 
-export default function getConfig(tokens, { extend = false } = {}) {
+export default function getConfig(tokens, { extend = false, mustMatch = true } = {}) {
   if (!validateTokens(tokens)) {
     throw new Error(
       "Tokens are not in a valid format. A flat set of key-value modules is expected."
@@ -25,13 +25,24 @@ export default function getConfig(tokens, { extend = false } = {}) {
       return null;
     }
 
-    const [matcherKey, matcherValue] = Object.entries(matchers).find(
+    const matchingEntry = Object.entries(matchers).find(
       ([_, matcher]) => {
         const match = kebabCase(tokenKey).match(matcher);
         return match && match.length;
       }
     );
 
+    if (mustMatch && !matchingEntry) {
+      throw new Error(
+        "Unmatched token detected, if you want to skip this error you can set mustMatch option to false"
+      )
+    }
+
+    if (!matchingEntry) {
+      return null;
+    }
+
+    const [matcherKey, matcherValue] = matchingEntry;
     if (!matcherKey) {
       return null;
     }
@@ -52,7 +63,7 @@ export default function getConfig(tokens, { extend = false } = {}) {
         .findIndex(([_, value]) => {
           return value === tokenValue;
         });
-      
+
       try {
         const lineHeight = Object.entries(tokens).filter(
           ([key]) => camelCase(key).includes("lineHeight")
